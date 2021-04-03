@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: toor
+      MONGO_REPLICA_SET_NAME: replica-mongo
+    volumes:
+    - mongo-data:/data/db
+    ports:
+    - 27017:27017
+      
+volumes:
+  mongo-data: {}
