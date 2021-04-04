@@ -4,6 +4,7 @@ namespace Isitar.FileStorage.Application
     using System.IO;
     using System.Text;
     using System.Threading.Tasks;
+    using Commands.CleanupAttachments;
     using Commands.CreateAttachment;
     using Commands.DeleteAttachment;
     using Contract;
@@ -63,6 +64,11 @@ namespace Isitar.FileStorage.Application
             {
                 Id = id
             });
+        }
+
+        public async Task CleanupAttachmentsAsync()
+        {
+            await mediator.Send(new CleanupAttachmentsCommand());
         }
     }
 }

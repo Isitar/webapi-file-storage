@@ -23,7 +23,7 @@ namespace Isitar.FileStorage.Application.Entities
                 AttachmentSize.MEDIA_SIZE_L => "_L",
                 _ => "",
             };
-            return $"{Id}{suffix}{extension}";
+            return $"{OriginalAttachmentId ?? Id}{suffix}{extension}";
         }
     }
 }

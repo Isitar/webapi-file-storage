@@ -80,43 +80,50 @@ namespace Isitar.FileStorage.Application.Commands.CreateAttachment
                 await fileDb.AddAsync(attachment, cancellationToken);
 
 
-                if (request.MimeType?.Trim().StartsWith("image") ?? false)
+                if ((request.MimeType?.Trim().StartsWith("image") ?? false) && 
+                    !request.MimeType.Trim().StartsWith("image/svg"))
                 {
-
-                    foreach (var settingEntry in sizeSettings.Settings)
+                    try
                     {
-                        stream.Position = 0;
-                        using var img = new MagickImage(stream);
-                        var size = new MagickGeometry(settingEntry.MaxWidth, settingEntry.MaxHeight);
-                        switch (Path.GetExtension(request.Filename))
+                        foreach (var settingEntry in sizeSettings.Settings)
                         {
-                            case ".jpg":
-                                img.Format = MagickFormat.Pjpeg;
-                                img.Interlace = Interlace.Jpeg;
-                                break;
-                            case ".png":
-                                img.Interlace = Interlace.Png;
-                                break;
+                            stream.Position = 0;
+                            using var img = new MagickImage(stream);
+                            var size = new MagickGeometry(Math.Min(settingEntry.MaxWidth, img.Width), Math.Min(settingEntry.MaxHeight, img.Height));
+                            switch (Path.GetExtension(request.Filename))
+                            {
+                                case ".jpg":
+                                    img.Format = MagickFormat.Pjpeg;
+                                    img.Interlace = Interlace.Jpeg;
+                                    break;
+                                case ".png":
+                                    img.Interlace = Interlace.Png;
+                                    break;
+                            }
+
+                            img.Resize(size);
+                            img.Quality = settingEntry.Quality;
+
+
+                            var resizedStream = new MemoryStream();
+                            await img.WriteAsync(resizedStream);
+                            var fileSize = resizedStream.Length;
+                            var resizedAttachment = new Attachment()
+                            {
+                                Id = Guid.NewGuid(),
+                                OriginalAttachmentId = request.Id,
+                                Filename = request.Filename?.Trim(),
+                                MimeType = request.MimeType?.Trim(),
+                                FileSize = fileSize,
+                                Size = settingEntry.Size,
+                            };
+                            await SaveFileAsync(resizedStream, resizedAttachment.RealFilename());
+                            await fileDb.AddAsync(resizedAttachment, cancellationToken);
                         }
-
-                        img.Resize(size);
-                        img.Quality = settingEntry.Quality;
-
-
-                        var resizedStream = new MemoryStream();
-                        await img.WriteAsync(resizedStream);
-                        var fileSize = resizedStream.Length;
-                        var resizedAttachment = new Attachment()
-                        {
-                            Id = Guid.NewGuid(),
-                            OriginalAttachmentId = request.Id,
-                            Filename = request.Filename?.Trim(),
-                            MimeType = request.MimeType?.Trim(),
-                            FileSize = fileSize,
-                            Size = settingEntry.Size,
-                        };
-                        await SaveFileAsync(resizedStream, resizedAttachment.RealFilename());
-                        await fileDb.AddAsync(resizedAttachment, cancellationToken);
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogInformation($"Could not create smaller sizes for image, {e.Message}");
                     }
                 }
 

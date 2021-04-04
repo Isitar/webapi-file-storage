@@ -15,6 +15,7 @@ namespace Isitar.FileStorage.WebApi
             public const string SingleAttachment = AttachmentBase + "/{id}";
             public const string SingleAttachmentData = AttachmentBase + "/{id}/data";
             public const string DeleteAttachment = AttachmentBase + "/{id}";
+            public const string CleanupAttachments = AttachmentBase + "/clean-up";
         }
     }
 }

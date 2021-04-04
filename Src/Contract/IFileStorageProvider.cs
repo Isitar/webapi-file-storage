@@ -46,5 +46,11 @@ namespace Isitar.FileStorage.Contract
         /// </summary>
         /// <param name="id">the id of the attachment</param>
         public Task DeleteAsync(Guid id);
+
+        /// <summary>
+        /// Cleans up dangling files etc.
+        /// </summary>
+        /// <returns>nothing</returns>
+        public Task CleanupAttachmentsAsync();
     }
 }

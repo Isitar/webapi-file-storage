@@ -17,6 +17,13 @@ namespace Isitar.FileStorage.WebApi.Controllers
             this.fileStorageProvider = fileStorageProvider;
         }
 
+        [HttpPost(ApiRoutes.Attachment.CleanupAttachments)]
+        public async Task<IActionResult> CleanupAttachmentsAsync()
+        {
+            await fileStorageProvider.CleanupAttachmentsAsync();
+            return Ok();
+        }
+        
         [HttpPost(ApiRoutes.Attachment.CreateAttachment)]
         public async Task<IActionResult> CreateAttachmentAsync([FromForm] CreateAttachmentRequest createAttachmentRequest)
         {
