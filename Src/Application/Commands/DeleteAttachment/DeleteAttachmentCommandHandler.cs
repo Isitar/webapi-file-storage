@@ -4,6 +4,7 @@ namespace Isitar.FileStorage.Application.Commands.DeleteAttachment
     using System.Threading;
     using System.Threading.Tasks;
     using Exceptions;
+    using ExtensionMethods;
     using Interfaces;
     using MediatR;
     using Settings;

@@ -5,6 +5,7 @@ namespace Isitar.FileStorage.Application.Queries.AttachmentInSize
     using System.Threading.Tasks;
     using Contract;
     using Exceptions;
+    using ExtensionMethods;
     using Interfaces;
     using MediatR;
     using Settings;
@@ -42,7 +43,7 @@ namespace Isitar.FileStorage.Application.Queries.AttachmentInSize
             var content = request.ReturnContent
                 ? await OpenAsync(attachment.RealFilename())
                 : null;
-            return (content, attachment);
+            return (content, attachment.Base());
         }
     }
 }

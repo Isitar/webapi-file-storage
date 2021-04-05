@@ -6,6 +6,7 @@ namespace Isitar.FileStorage.Application.Commands.CreateAttachment
     using System.Threading;
     using System.Threading.Tasks;
     using Contract;
+    using ExtensionMethods;
     using ImageMagick;
     using Interfaces;
     using MediatR;
