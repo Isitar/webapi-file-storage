@@ -22,11 +22,10 @@ jobs:
       - name: Push to Docker Hub
         uses: docker/build-push-action@v2
         with:
-          repository: isitar/webapi-file-storage
-          tags: stable
-          tag_with_ref: true
+          tags: isitar/webapi-file-storage:stable
           file: Src/WebApi/Dockerfile
           push: true
+          pull: true
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
@@ -36,10 +35,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v2
-        with:
-          registry: ghcr.io
-          repository: isitar/webapi-file-storage/webapi-file-storage
-          tag_with_ref: true
-          tags: stable
+        with:   
+          tags: ghcr.io/isitar/webapi-file-storage/webapi-file-storage:stable
           file: Src/WebApi/Dockerfile
           push: true
+          pull: true
